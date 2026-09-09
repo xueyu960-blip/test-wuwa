@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>鸣潮 · 共鸣者人格测试</title>
+<style>
+  :root {
+    --bg: #05070d;
+    --bg2: #0a0f1c;
+    --panel: rgba(18, 24, 40, 0.72);
+    --panel-border: rgba(103, 232, 249, 0.18);
+    --text: #e6f1ff;
+    --muted: #8b9bb8;
+    --accent: #22d3ee;
+    --accent2: #a78bfa;
+    --glow: rgba(34, 211, 238, 0.45);
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(167, 139, 250, 0.16), transparent 60%),
+      radial-gradient(1000px 700px at -10% 110%, rgba(34, 211, 238, 0.14), transparent 55%),
+      linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 科幻网格背景 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(103, 232, 249, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(103, 232, 249, 0.045) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .screen { display: none; animation: fadeUp 0.5s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+    padding: clamp(24px, 5vw, 40px);
+  }
+
+  /* ---------- 开始页 ---------- */
+  .hero {
+    text-align: center;
+    padding-top: 8px;
+  }
+  .hero .mark {
+    width: 64px; height: 64px; margin: 0 auto 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 0 30px var(--glow);
+  }
+  .hero h1 {
+    font-size: clamp(26px, 6vw, 38px);
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #67e8f9, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 12px;
+  }
+  .hero .sub {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .hero .meta {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 34px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #041018;
+    background: linear-gradient(135deg, #67e8f9, #38bdf8);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 24px var(--glow);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 0 34px var(--glow); }
+  .btn:active { transform: translateY(0); }
+  .btn.ghost {
+    color: var(--text);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--panel-border);
+    box-shadow: none;
+  }
+
+  /* ---------- 答题页 ---------- */
+  .progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .progress-head b { color: var(--accent); }
+  .bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+    margin-bottom: 26px;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 12px var(--glow);
+  }
+  .q-text {
+    font-size: clamp(19px, 4.5vw, 24px);
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    text-align: left;
+    padding: 16px 18px;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .option:hover {
+    border-color: var(--accent);
+    background: rgba(34, 211, 238, 0.07);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.15);
+  }
+  .option .k {
+    display: inline-block;
+    min-width: 26px; height: 26px;
+    line-height: 26px;
+    text-align: center;
+    margin-right: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(34, 211, 238, 0.1);
+  }
+  .option.picked {
+    border-color: var(--accent);
+    background: rgba(34, 211, 238, 0.12);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
+  }
+
+  /* ---------- 结果页 ---------- */
+  .result-head {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .result-head .label {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .result-head .big {
+    font-size: clamp(28px, 7vw, 42px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #67e8f9, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 14px 0 6px;
+  }
+  .badge {
+    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+  }
+  .stars { color: #fbbf24; letter-spacing: 2px; font-size: 15px; }
+
+  .match-bar {
+    margin: 20px 0 6px;
+  }
+  .match-bar .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .match-bar .track {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .match-bar .fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 12px var(--glow);
+    transition: width 0.8s cubic-bezier(.2,.7,.3,1);
+  }
+
+  .desc {
+    margin: 20px 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .tag {
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    color: #041018;
+    background: linear-gradient(135deg, #67e8f9, #38bdf8);
+    font-weight: 600;
+  }
+
+  .top3 { margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
+  .top3 h3 {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .runner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 8px;
+  }
+  .runner .rank {
+    width: 24px; height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(34, 211, 238, 0.1);
+  }
+  .runner .nm { flex: 1; font-size: 15px; font-weight: 600; }
+  .runner .el { font-size: 12px; color: var(--muted); }
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 26px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 开始页 -->
+  <section id="screen-start" class="screen active">
+    <div class="card hero">
+      <div class="mark">✦</div>
+      <h1>共鸣者人格测试</h1>
+      <p class="sub">回答 7 道题，找到与你灵魂共振的共鸣者。<br>基于《鸣潮》3.6 版本全共鸣者阵容。</p>
+      <p class="meta">7 题 · 4 选 1 · 约 1 分钟</p>
+      <button class="btn" onclick="startQuiz()">开始测试 →</button>
+    </div>
+  </section>
+
+  <!-- 答题页 -->
+  <section id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="progress-head">
+        <span>QUESTION <b id="q-cur">1</b> / 7</span>
+        <span id="q-pct">14%</span>
+      </div>
+      <div class="bar"><div class="bar-fill" id="bar-fill" style="width:14%"></div></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+    </div>
+  </section>
+
+  <!-- 结果页 -->
+  <section id="screen-result" class="screen">
+    <div class="card">
+      <div class="result-head">
+        <div class="label">你的共鸣者</div>
+        <div class="big" id="r-name"></div>
+        <div class="badges" id="r-badges"></div>
+      </div>
+
+      <div class="match-bar">
+        <div class="row"><span>共鸣度</span><span id="r-score"></span></div>
+        <div class="track"><div class="fill" id="r-fill" style="width:0%"></div></div>
+      </div>
+
+      <p class="desc" id="r-desc"></p>
+      <div class="tags" id="r-tags"></div>
+
+      <div class="top3">
+        <h3>其他高共鸣</h3>
+        <div id="r-top3"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="startQuiz()">重新测试</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+ * ① 角色数据（方便你修改：增删角色、调整标签/描述）
+ *    element：气动 / 冷凝 / 导电 / 热熔 / 湮灭 / 衍射 / 多属性
+ *    weapon：迅刀 / 长刃 / 臂铠 / 佩枪 / 音感仪
+ *    tags：3~5 个性格标签，必须来自下方「特质词表」
+ * ============================================================ */
+const CHARACTERS = [
+  { name: "漂泊者", en: "Rover", element: "多属性", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","沉静","独立"], desc: "跨越世界寻找真相的旅人，坚定而温柔。" },
+  { name: "阿尔托", en: "Aalto", element: "气动", weapon: "佩枪", rarity: 4, tags: ["神秘","智慧","直率","自由"], desc: "游走于阴影中的情报贩子，神秘莫测。" },
+  { name: "秧秧", en: "Yangyang", element: "气动", weapon: "迅刀", rarity: 4, tags: ["活泼","温柔","忠诚","直率"], desc: "开朗热情的新手向导，永远活力满满。" },
+  { name: "卡提希娅", en: "Cartethyia", element: "气动", weapon: "迅刀", rarity: 5, tags: ["优雅","独立","强势","智慧"], desc: "身居高位却独来独往，强大而优雅。" },
+  { name: "夏空", en: "Ciaccona", element: "气动", weapon: "佩枪", rarity: 5, tags: ["优雅","浪漫","理性"], desc: "黎那汐塔的吟游诗人，为神明与凡人而歌，记录并传唱世间的故事。" },
+  { name: "尤诺", en: "Iuno", element: "气动", weapon: "臂铠", rarity: 5, tags: ["智慧","自由","理性","神秘"], desc: "忤逆命运的谕女，历经裹挟却从不言败，以自己为唯一的解。" },
+  { name: "鉴心", en: "Jianxin", element: "气动", weapon: "臂铠", rarity: 5, tags: ["沉静","温柔","坚毅","智慧"], desc: "心境澄明的修行者，平和而坚韧。" },
+  { name: "忌炎", en: "Jiyan", element: "气动", weapon: "长刃", rarity: 5, tags: ["沉静","坚毅","忠诚","守护"], desc: "冷静果断的将军，忠于守护。" },
+  { name: "清宵", en: "Qingxiao", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","沉静","独立","坚毅"], desc: "避世绝尘的剑道宗师，琴剑双绝。" },
+  { name: "仇远", en: "Qiuyuan", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","独立","坚毅"], desc: "来去如风的独行剑客，孤高自持。" },
+  { name: "西格莉卡", en: "Sigrika", element: "气动", weapon: "臂铠", rarity: 5, tags: ["自由","热血","活泼","强势"], desc: "星炬学院的学生，为成为合格的昭日者而竭尽全力。" },
+  { name: "白芷", en: "Baizhi", element: "冷凝", weapon: "音感仪", rarity: 4, tags: ["温柔","守护","沉静","忠诚"], desc: "温柔体贴的医者，默默守护他人。" },
+  { name: "散华", en: "Sanhua", element: "冷凝", weapon: "迅刀", rarity: 4, tags: ["沉静","忠诚","坚毅","独立"], desc: "沉默寡言的剑士，忠贞坚毅。" },
+  { name: "釉瑚", en: "Youhu", element: "冷凝", weapon: "臂铠", rarity: 4, tags: ["活泼","直率","自由","浪漫"], desc: "伶牙俐齿、古灵精怪的鉴宝师，以打油诗妙解珍宝。" },
+  { name: "珂莱塔", en: "Carlotta", element: "冷凝", weapon: "佩枪", rarity: 5, tags: ["优雅","强势","独立","智慧"], desc: "优雅强势的千金，独立自信。" },
+  { name: "绯雪", en: "Hiyuki", element: "冷凝", weapon: "迅刀", rarity: 5, tags: ["温柔","坚毅","守护","忠诚"], desc: "虔诚温柔的巫女，意志坚强。" },
+  { name: "凌阳", en: "Lingyang", element: "冷凝", weapon: "臂铠", rarity: 5, tags: ["活泼","自由","热血","直率"], desc: "活泼好动的狮子少年，自由热血。" },
+  { name: "洛瑟菈", en: "Lucilla", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["理性","沉静","独立","智慧"], desc: "星炬学院的校长，脚踏实地的理想主义者，默默守护学生。" },
+  { name: "穗穗", en: "Suisui", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","忠诚","活泼"], desc: "温柔治愈的支援者，忠诚可靠。" },
+  { name: "折枝", en: "Zhezhi", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["浪漫","温柔","沉静","智慧"], desc: "细腻浪漫的艺术家，富有灵性。" },
+  { name: "卜灵", en: "Buling", element: "导电", weapon: "音感仪", rarity: 4, tags: ["活泼","直率","自由"], desc: "灵动活泼的少女，直率自由。" },
+  { name: "灯灯", en: "Lumi", element: "导电", weapon: "长刃", rarity: 4, tags: ["温柔","活泼","浪漫"], desc: "呜呜物流的领航员，如小太阳般真诚热情的质朴少女。" },
+  { name: "渊武", en: "Yuanwu", element: "导电", weapon: "臂铠", rarity: 4, tags: ["坚毅","守护","沉静"], desc: "沉稳的武僧，守护弱小。" },
+  { name: "奥古斯塔", en: "Augusta", element: "导电", weapon: "长刃", rarity: 5, tags: ["坚毅","强势","热血","守护"], desc: "勇猛坚韧的战士，愈战愈强。" },
+  { name: "卡卡罗", en: "Calcharo", element: "导电", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","独立","神秘"], desc: "佣兵组织的领袖，强势而神秘。" },
+  { name: "丽贝卡", en: "Rebecca", element: "导电", weapon: "佩枪", rarity: 5, tags: ["热血","直率","活泼"], desc: "情绪反复无常的边缘行者，乐于用霰弹枪解决麻烦。" },
+  { name: "相里要", en: "Xiangli Yao", element: "导电", weapon: "臂铠", rarity: 5, tags: ["智慧","理性","沉静"], desc: "聪慧理性的科学家，沉静专注。" },
+  { name: "吟霖", en: "Yinlin", element: "导电", weapon: "音感仪", rarity: 5, tags: ["优雅","智慧","神秘","强势"], desc: "优雅精明的女子，神秘而强势。" },
+  { name: "炽霞", en: "Chixia", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["热血","活泼","直率","忠诚"], desc: "正义感爆棚的巡警，热血忠诚。" },
+  { name: "莫特斐", en: "Mortefi", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["理性","智慧","沉静"], desc: "冷静理性的研究员，知识渊博。" },
+  { name: "爱弥斯", en: "Aemeath", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["强势","热血","坚毅"], desc: "星炬学院的隧者适格者，如今是游走星海的电子幽灵。" },
+  { name: "布兰特", en: "Brant", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["自由","热血","浪漫","直率"], desc: "华丽不羁的指挥官，自由浪漫。" },
+  { name: "长离", en: "Changli", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["温柔","智慧","守护","优雅"], desc: "温柔睿智的导师，优雅守护。" },
+  { name: "达妮娅", en: "Denia", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["神秘","强势","优雅","独立"], desc: "神秘危险的女子，妩媚独立。" },
+  { name: "安可", en: "Encore", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["活泼","直率","温柔","浪漫"], desc: "与玩偶相伴的少女，活泼浪漫。" },
+  { name: "嘉贝莉娜", en: "Galbrena", element: "热熔", weapon: "佩枪", rarity: 5, tags: ["热血","强势","坚毅"], desc: "外表冷峻、杀伐果断的猎魔人，人称「永火的恶魔」。" },
+  { name: "景燃", en: "Jingran", element: "热熔", weapon: "长刃", rarity: 5, tags: ["独立","自由","神秘","坚毅"], desc: "独行通冥人，自由神秘，遵循本心。" },
+  { name: "露帕", en: "Lupa", element: "热熔", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","热血"], desc: "狩猎首领的强者，强势坚毅。" },
+  { name: "莫宁", en: "Mornye", element: "热熔", weapon: "长刃", rarity: 5, tags: ["温柔","守护","忠诚"], desc: "深空联合研究院的工程师，以人造双腿追寻璀璨群星。" },
+  { name: "丹瑾", en: "Danjin", element: "湮灭", weapon: "迅刀", rarity: 4, tags: ["热血","叛逆","直率","神秘"], desc: "危险又神秘的少女，热血叛逆。" },
+  { name: "桃祈", en: "Taoqi", element: "湮灭", weapon: "长刃", rarity: 4, tags: ["沉静","守护","温柔"], desc: "温和沉静的守护者。" },
+  { name: "椿", en: "Camellya", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["神秘","强势","浪漫","独立"], desc: "神秘执着的女子，浪漫而强势。" },
+  { name: "坎特蕾拉", en: "Cantarella", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","浪漫"], desc: "优雅神秘的贵妇，强势魅惑。" },
+  { name: "千咲", en: "Chisa", element: "湮灭", weapon: "长刃", rarity: 5, tags: ["沉静","神秘","理性"], desc: "沉静神秘的黑刃使用者，理性冷静。" },
+  { name: "弗洛洛", en: "Phrolova", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","独立"], desc: "残星会的会监，游走于生死之间的神秘指挥家。" },
+  { name: "洛可可", en: "Roccia", element: "湮灭", weapon: "臂铠", rarity: 5, tags: ["活泼","直率","浪漫","自由"], desc: "夸张逗趣的演员，活泼浪漫。" },
+  { name: "秧秧·玄翎", en: "Yangyang Xuanling", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","忠诚","沉静"], desc: "觉醒守护之力的秧秧，坚毅忠诚。" },
+  { name: "今汐", en: "Jinhsi", element: "衍射", weapon: "长刃", rarity: 5, tags: ["优雅","智慧","强势","沉静"], desc: "威严智慧的州主，优雅沉静。" },
+  { name: "露西", en: "Lucy", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["活泼","直率","热血"], desc: "活泼直率的少女，掌握时间之力。" },
+  { name: "陆·赫斯", en: "Luuk Herssen", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["优雅","理性","智慧"], desc: "星炬学院的校医，擅于倾听与解构人心阴霾的持稳医者。" },
+  { name: "琳奈", en: "Lynae", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["理性","智慧","温柔"], desc: "理性温柔的全能支援者。" },
+  { name: "菲比", en: "Phoebe", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","忠诚","活泼","守护"], desc: "温柔的教会少女，活泼忠诚。" },
+  { name: "守岸人", en: "The Shorekeeper", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["神秘","沉静","守护","温柔"], desc: "神秘温柔的守护者，沉静无私。" },
+  { name: "维里奈", en: "Verina", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","活泼","忠诚"], desc: "温柔活泼的治疗师，忠诚可靠。" },
+  { name: "赞妮", en: "Zani", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["坚毅","忠诚","守护","沉静"], desc: "认真可靠的保镖，坚毅守护。" }
+];
+
+/* ============================================================
+ * ② 题目数据（方便你修改：增删题目、调整选项与对应特质）
+ *    每题 4 个选项，每个选项的 traits 对应不同角色特质。
+ *    traits 也必须来自下方「特质词表」。
+ * ============================================================ */
+const QUESTIONS = [
+  {
+    question: "周末的闲暇时光，你更想怎么度过？",
+    options: [
+      { text: "一个人安静地练琴、看书，享受独处", traits: ["沉静","孤傲","理性"] },
+      { text: "呼朋唤友一起去探索新地方、热闹一场", traits: ["活泼","自由","热血"] },
+      { text: "默默陪伴在意的人，为 TA 准备惊喜", traits: ["温柔","守护","浪漫"] },
+      { text: "制定计划提升自己，为下一个目标冲刺", traits: ["坚毅","强势","智慧"] }
+    ]
+  },
+  {
+    question: "面对一个棘手的难题，你的第一反应是？",
+    options: [
+      { text: "冷静分析，先想清楚最优解再动手", traits: ["理性","智慧","沉静"] },
+      { text: "凭直觉和热情直接上手试了再说", traits: ["热血","直率","活泼"] },
+      { text: "相信自己的判断，走一条自己的路", traits: ["独立","叛逆","自由"] },
+      { text: "集结伙伴，大家一起来扛", traits: ["忠诚","守护","温柔"] }
+    ]
+  },
+  {
+    question: "在团队里，你更常扮演什么角色？",
+    options: [
+      { text: "运筹帷幄的军师或领导者", traits: ["智慧","强势","理性"] },
+      { text: "冲锋陷阵、冲在最前面的先锋", traits: ["热血","坚毅","直率"] },
+      { text: "稳定军心、照顾每个人的后盾", traits: ["守护","温柔","忠诚"] },
+      { text: "特立独行、来去自由的独行侠", traits: ["自由","独立","神秘"] }
+    ]
+  },
+  {
+    question: "别人眼中的你，最接近哪种气质？",
+    options: [
+      { text: "神秘莫测，让人捉摸不透", traits: ["神秘","孤傲","沉静"] },
+      { text: "优雅从容，谈吐举止得体", traits: ["优雅","理性","浪漫"] },
+      { text: "阳光开朗，走到哪儿都热闹", traits: ["活泼","直率","热血"] },
+      { text: "温柔可靠，让人安心", traits: ["温柔","守护","忠诚"] }
+    ]
+  },
+  {
+    question: "在一段关系里，你最看重什么？",
+    options: [
+      { text: "忠诚与信任，绝不背叛", traits: ["忠诚","守护","坚毅"] },
+      { text: "自由与空间，彼此独立", traits: ["自由","独立","理性"] },
+      { text: "激情与浪漫，轰轰烈烈", traits: ["热血","浪漫","直率"] },
+      { text: "灵魂的共鸣，懂我就好", traits: ["沉静","神秘","智慧"] }
+    ]
+  },
+  {
+    question: "面对强敌或巨大压力时，你会？",
+    options: [
+      { text: "沉着应对，稳扎稳打", traits: ["沉静","理性","坚毅"] },
+      { text: "越挫越勇，正面硬刚", traits: ["热血","强势","坚毅"] },
+      { text: "另辟蹊径，出其不意", traits: ["叛逆","自由","智慧"] },
+      { text: "为了守护的人，绝不后退", traits: ["守护","忠诚","温柔"] }
+    ]
+  },
+  {
+    question: "如果用一个词形容你向往的人生，你会选？",
+    options: [
+      { text: "自由——浪迹天涯，无拘无束", traits: ["自由","独立","浪漫"] },
+      { text: "守护——成为他人的依靠", traits: ["守护","温柔","忠诚"] },
+      { text: "登顶——站在最高处俯瞰", traits: ["强势","坚毅","智慧"] },
+      { text: "随性——做最真实的自己", traits: ["直率","活泼","叛逆"] }
+    ]
+  }
+];
+
+/* ============================================================
+ * ③ 特质词表（可选参考，标签/选项 traits 都从这里面取，
+ *    保证计分能正确匹配到角色）
+ * ============================================================ */
+const TRAITS = [
+  "沉静","热血","自由","守护","理性","温柔","强势","叛逆",
+  "忠诚","独立","神秘","优雅","活泼","坚毅","孤傲","直率","浪漫","智慧"
+];
+
+/* 元素配色（用于徽章） */
+const ELEMENT_COLORS = {
+  "气动": "#7ee787",
+  "冷凝": "#7dd3fc",
+  "导电": "#c4b5fd",
+  "热熔": "#fb923c",
+  "湮灭": "#f472b6",
+  "衍射": "#fbbf24",
+  "多属性": "#67e8f9"
+};
+
+/* ---------------- 测试逻辑 ---------------- */
+let current = 0;
+let answers = [];
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startQuiz() {
+  current = 0;
+  answers = [];
+  renderQuestion();
+  showScreen("screen-quiz");
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById("q-cur").textContent = current + 1;
+  document.getElementById("q-pct").textContent = Math.round((current / QUESTIONS.length) * 100) + "%";
+  document.getElementById("bar-fill").style.width = ((current + 1) / QUESTIONS.length * 100) + "%";
+  document.getElementById("q-text").textContent = q.question;
+
+  const opts = document.getElementById("q-options");
+  opts.innerHTML = "";
+  const keys = ["A", "B", "C", "D"];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerHTML = `<span class="k">${keys[i]}</span>${opt.text}`;
+    btn.onclick = () => pick(i, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function pick(i, btn) {
+  if (btn.classList.contains("picked")) return;
+  btn.classList.add("picked");
+  answers.push(i);
+  setTimeout(() => {
+    if (current + 1 >= QUESTIONS.length) {
+      renderResult();
+    } else {
+      current++;
+      renderQuestion();
+    }
+  }, 240);
+}
+
+function calculate() {
+  const scores = CHARACTERS.map(() => 0);
+  answers.forEach((optIdx, qIdx) => {
+    const opt = QUESTIONS[qIdx].options[optIdx];
+    opt.traits.forEach(t => {
+      CHARACTERS.forEach((c, ci) => {
+        if (c.tags.includes(t)) scores[ci] += 1;
+      });
+    });
+  });
+  const ranked = scores
+    .map((s, i) => ({ idx: i, score: s }))
+    .sort((a, b) => b.score - a.score || CHARACTERS[b.idx].rarity - CHARACTERS[a.idx].rarity || a.idx - b.idx);
+  return { scores, ranked };
+}
+
+function renderResult() {
+  const { scores, ranked } = calculate();
+  const top = CHARACTERS[ranked[0].idx];
+  const topScore = ranked[0].score;
+  const maxScore = Math.max(1, topScore);
+
+  document.getElementById("r-name").textContent = top.name;
+
+  // 徽章：元素 + 武器 + 星级
+  const badges = document.getElementById("r-badges");
+  const elColor = ELEMENT_COLORS[top.element] || "#9ca3af";
+  const stars = "★".repeat(top.rarity) + "☆".repeat(5 - top.rarity);
+  badges.innerHTML =
+    `<span class="badge" style="color:${elColor};border-color:${elColor}55">${top.element}</span>` +
+    `<span class="badge">${top.weapon}</span>` +
+    `<span class="badge stars">${stars}</span>`;
+
+  // 共鸣度
+  const pct = Math.round(topScore / maxScore * 100);
+  document.getElementById("r-score").textContent = `${topScore} / ${maxScore} 共鸣值`;
+  document.getElementById("r-fill").style.width = pct + "%";
+
+  document.getElementById("r-desc").textContent = top.desc;
+
+  // 标签
+  const tagsEl = document.getElementById("r-tags");
+  tagsEl.innerHTML = top.tags.map(t => `<span class="tag">${t}</span>`).join("");
+
+  // 其他高共鸣（top3）
+  const top3El = document.getElementById("r-top3");
+  top3El.innerHTML = ranked.slice(0, 3).map((r, i) => {
+    const c = CHARACTERS[r.idx];
+    const ec = ELEMENT_COLORS[c.element] || "#9ca3af";
+    return `<div class="runner">
+      <span class="rank">${i + 1}</span>
+      <span class="nm">${c.name}</span>
+      <span class="el" style="color:${ec}">${c.element}</span>
+      <span class="el">${r.score} 共鸣</span>
+    </div>`;
+  }).join("");
+
+  showScreen("screen-result");
+}
+</script>
+</body>
+</html>
