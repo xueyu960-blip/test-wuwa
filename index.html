@@ -634,6 +634,7 @@ function showScreen(id) {
 function startQuiz() {
   current = 0;
   answers = [];
+  quizQuestions = shuffle(QUESTIONS);
   renderQuestion();
   showScreen("screen-quiz");
 }
