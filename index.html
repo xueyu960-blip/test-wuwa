@@ -331,8 +331,8 @@
     <div class="card hero">
       <div class="mark">✦</div>
       <h1>共鸣者人格测试</h1>
-      <p class="sub">回答 14 道题，找到与你灵魂共振的共鸣者。<br>基于《鸣潮》3.6 版本全共鸣者阵容。</p>
-      <p class="meta">14 题 · 4 选 1 · 约 2 分钟</p>
+      <p class="sub">回答 15 道题，找到与你灵魂共振的共鸣者。<br>基于《鸣潮》3.6 版本全共鸣者阵容。</p>
+      <p class="meta">15 题 · 4 选 1 · 约 2 分钟</p>
       <button class="btn" onclick="startQuiz()">开始测试 →</button>
     </div>
   </section>
@@ -341,7 +341,7 @@
   <section id="screen-quiz" class="screen">
     <div class="card">
       <div class="progress-head">
-        <span>QUESTION <b id="q-cur">1</b> / 14</span>
+        <span>QUESTION <b id="q-cur">1</b> / 15</span>
         <span id="q-pct">7%</span>
       </div>
       <div class="bar"><div class="bar-fill" id="bar-fill" style="width:7%"></div></div>
@@ -388,61 +388,61 @@
  *    tags：3~5 个性格标签，必须来自下方「特质词表」
  * ============================================================ */
 const CHARACTERS = [
-  { name: "漂泊者", en: "Rover", element: "多属性", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","沉静","独立"], desc: "跨越世界寻找真相的旅人，坚定而温柔。" },
-  { name: "秋水", en: "Aalto", element: "气动", weapon: "佩枪", rarity: 4, tags: ["神秘","智慧","直率","自由"], desc: "游走于阴影中的情报贩子，神秘莫测。" },
-  { name: "秧秧", en: "Yangyang", element: "气动", weapon: "迅刀", rarity: 4, tags: ["活泼","温柔","忠诚","直率"], desc: "开朗热情的新手向导，永远活力满满。" },
-  { name: "卡提希娅", en: "Cartethyia", element: "气动", weapon: "迅刀", rarity: 5, tags: ["优雅","独立","强势","智慧"], desc: "身居高位却独来独往，强大而优雅。" },
-  { name: "夏空", en: "Ciaccona", element: "气动", weapon: "佩枪", rarity: 5, tags: ["优雅","浪漫","理性"], desc: "黎那汐塔的吟游诗人，为神明与凡人而歌，记录并传唱世间的故事。" },
-  { name: "尤诺", en: "Iuno", element: "气动", weapon: "臂铠", rarity: 5, tags: ["智慧","自由","理性","神秘"], desc: "忤逆命运的谕女，历经裹挟却从不言败，以自己为唯一的解。" },
-  { name: "鉴心", en: "Jianxin", element: "气动", weapon: "臂铠", rarity: 5, tags: ["沉静","温柔","坚毅","智慧"], desc: "心境澄明的修行者，平和而坚韧。" },
-  { name: "忌炎", en: "Jiyan", element: "气动", weapon: "长刃", rarity: 5, tags: ["沉静","坚毅","忠诚","守护"], desc: "冷静果断的将军，忠于守护。" },
-  { name: "清宵", en: "Qingxiao", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","沉静","独立","坚毅"], desc: "避世绝尘的剑道宗师，琴剑双绝。" },
-  { name: "仇远", en: "Qiuyuan", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","独立","坚毅"], desc: "来去如风的独行剑客，孤高自持。" },
-  { name: "西格莉卡", en: "Sigrika", element: "气动", weapon: "臂铠", rarity: 5, tags: ["自由","热血","活泼","强势"], desc: "星炬学院的学生，为成为合格的昭日者而竭尽全力。" },
-  { name: "白芷", en: "Baizhi", element: "冷凝", weapon: "音感仪", rarity: 4, tags: ["温柔","守护","沉静","忠诚"], desc: "温柔体贴的医者，默默守护他人。" },
-  { name: "散华", en: "Sanhua", element: "冷凝", weapon: "迅刀", rarity: 4, tags: ["沉静","忠诚","坚毅","独立"], desc: "沉默寡言的剑士，忠贞坚毅。" },
-  { name: "釉瑚", en: "Youhu", element: "冷凝", weapon: "臂铠", rarity: 4, tags: ["活泼","直率","自由","浪漫"], desc: "伶牙俐齿、古灵精怪的鉴宝师，以打油诗妙解珍宝。" },
-  { name: "珂莱塔", en: "Carlotta", element: "冷凝", weapon: "佩枪", rarity: 5, tags: ["优雅","强势","独立","智慧"], desc: "优雅强势的千金，独立自信。" },
-  { name: "绯雪", en: "Hiyuki", element: "冷凝", weapon: "迅刀", rarity: 5, tags: ["温柔","坚毅","守护","忠诚"], desc: "虔诚温柔的巫女，意志坚强。" },
-  { name: "凌阳", en: "Lingyang", element: "冷凝", weapon: "臂铠", rarity: 5, tags: ["活泼","自由","热血","直率"], desc: "活泼好动的狮子少年，自由热血。" },
-  { name: "洛瑟菈", en: "Lucilla", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["理性","沉静","独立","智慧"], desc: "星炬学院的校长，脚踏实地的理想主义者，默默守护学生。" },
-  { name: "穗穗", en: "Suisui", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","忠诚","活泼"], desc: "温柔治愈的支援者，忠诚可靠。" },
-  { name: "折枝", en: "Zhezhi", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["浪漫","温柔","沉静","智慧"], desc: "细腻浪漫的艺术家，富有灵性。" },
-  { name: "卜灵", en: "Buling", element: "导电", weapon: "音感仪", rarity: 4, tags: ["活泼","直率","自由"], desc: "灵动活泼的少女，直率自由。" },
-  { name: "灯灯", en: "Lumi", element: "导电", weapon: "长刃", rarity: 4, tags: ["温柔","活泼","浪漫"], desc: "呜呜物流的领航员，如小太阳般真诚热情的质朴少女。" },
-  { name: "渊武", en: "Yuanwu", element: "导电", weapon: "臂铠", rarity: 4, tags: ["坚毅","守护","沉静"], desc: "沉稳的武僧，守护弱小。" },
-  { name: "奥古斯塔", en: "Augusta", element: "导电", weapon: "长刃", rarity: 5, tags: ["坚毅","强势","热血","守护"], desc: "勇猛坚韧的战士，愈战愈强。" },
-  { name: "卡卡罗", en: "Calcharo", element: "导电", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","独立","神秘"], desc: "佣兵组织的领袖，强势而神秘。" },
-  { name: "丽贝卡", en: "Rebecca", element: "导电", weapon: "佩枪", rarity: 5, tags: ["热血","直率","活泼"], desc: "情绪反复无常的边缘行者，乐于用霰弹枪解决麻烦。" },
-  { name: "相里要", en: "Xiangli Yao", element: "导电", weapon: "臂铠", rarity: 5, tags: ["智慧","理性","沉静"], desc: "聪慧理性的科学家，沉静专注。" },
-  { name: "吟霖", en: "Yinlin", element: "导电", weapon: "音感仪", rarity: 5, tags: ["优雅","智慧","神秘","强势"], desc: "优雅精明的女子，神秘而强势。" },
-  { name: "炽霞", en: "Chixia", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["热血","活泼","直率","忠诚"], desc: "正义感爆棚的巡警，热血忠诚。" },
-  { name: "莫特斐", en: "Mortefi", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["理性","智慧","沉静"], desc: "冷静理性的研究员，知识渊博。" },
-  { name: "爱弥斯", en: "Aemeath", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["强势","热血","坚毅"], desc: "星炬学院的隧者适格者，如今是游走星海的电子幽灵。" },
-  { name: "布兰特", en: "Brant", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["自由","热血","浪漫","直率"], desc: "华丽不羁的指挥官，自由浪漫。" },
-  { name: "长离", en: "Changli", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["温柔","智慧","守护","优雅"], desc: "温柔睿智的导师，优雅守护。" },
-  { name: "达妮娅", en: "Denia", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["神秘","强势","优雅","独立"], desc: "神秘危险的女子，妩媚独立。" },
-  { name: "安可", en: "Encore", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["活泼","直率","温柔","浪漫"], desc: "与玩偶相伴的少女，活泼浪漫。" },
-  { name: "嘉贝莉娜", en: "Galbrena", element: "热熔", weapon: "佩枪", rarity: 5, tags: ["热血","强势","坚毅"], desc: "外表冷峻、杀伐果断的猎魔人，人称「永火的恶魔」。" },
-  { name: "景燃", en: "Jingran", element: "热熔", weapon: "长刃", rarity: 5, tags: ["独立","自由","神秘","坚毅"], desc: "独行通冥人，自由神秘，遵循本心。" },
-  { name: "露帕", en: "Lupa", element: "热熔", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","热血"], desc: "狩猎首领的强者，强势坚毅。" },
-  { name: "莫宁", en: "Mornye", element: "热熔", weapon: "长刃", rarity: 5, tags: ["温柔","守护","忠诚"], desc: "深空联合研究院的工程师，以人造双腿追寻璀璨群星。" },
-  { name: "丹瑾", en: "Danjin", element: "湮灭", weapon: "迅刀", rarity: 4, tags: ["热血","叛逆","直率","神秘"], desc: "危险又神秘的少女，热血叛逆。" },
-  { name: "桃祈", en: "Taoqi", element: "湮灭", weapon: "长刃", rarity: 4, tags: ["沉静","守护","温柔"], desc: "温和沉静的守护者。" },
-  { name: "椿", en: "Camellya", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["神秘","强势","浪漫","独立"], desc: "神秘执着的女子，浪漫而强势。" },
-  { name: "坎特蕾拉", en: "Cantarella", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","浪漫"], desc: "优雅神秘的贵妇，强势魅惑。" },
-  { name: "千咲", en: "Chisa", element: "湮灭", weapon: "长刃", rarity: 5, tags: ["沉静","神秘","理性"], desc: "沉静神秘的黑刃使用者，理性冷静。" },
-  { name: "弗洛洛", en: "Phrolova", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","独立"], desc: "残星会的会监，游走于生死之间的神秘指挥家。" },
-  { name: "洛可可", en: "Roccia", element: "湮灭", weapon: "臂铠", rarity: 5, tags: ["活泼","直率","浪漫","自由"], desc: "夸张逗趣的演员，活泼浪漫。" },
-  { name: "秧秧·玄翎", en: "Yangyang Xuanling", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","忠诚","沉静"], desc: "觉醒守护之力的秧秧，坚毅忠诚。" },
-  { name: "今汐", en: "Jinhsi", element: "衍射", weapon: "长刃", rarity: 5, tags: ["优雅","智慧","强势","沉静"], desc: "威严智慧的州主，优雅沉静。" },
-  { name: "露西", en: "Lucy", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["活泼","直率","热血"], desc: "活泼直率的少女，掌握时间之力。" },
-  { name: "陆·赫斯", en: "Luuk Herssen", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["优雅","理性","智慧"], desc: "星炬学院的校医，擅于倾听与解构人心阴霾的持稳医者。" },
-  { name: "琳奈", en: "Lynae", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["理性","智慧","温柔"], desc: "理性温柔的全能支援者。" },
-  { name: "菲比", en: "Phoebe", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","忠诚","活泼","守护"], desc: "温柔的教会少女，活泼忠诚。" },
-  { name: "守岸人", en: "The Shorekeeper", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["神秘","沉静","守护","温柔"], desc: "神秘温柔的守护者，沉静无私。" },
-  { name: "维里奈", en: "Verina", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","活泼","忠诚"], desc: "温柔活泼的治疗师，忠诚可靠。" },
-  { name: "赞妮", en: "Zani", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["坚毅","忠诚","守护","沉静"], desc: "认真可靠的保镖，坚毅守护。" }
+  { name: "漂泊者", en: "Rover", element: "多属性", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","沉静","独立","执念"], desc: "身世不明的共鸣者，为寻回记忆而踏上旅途，拥有吸收一切声音的力量。" },
+  { name: "秋水", en: "Aalto", element: "气动", weapon: "佩枪", rarity: 4, tags: ["神秘","智慧","直率","自由","狡黠"], desc: "如大雾般捉摸不透的情报商人，笑脸背后与黑海岸有千丝万缕的联系。" },
+  { name: "秧秧", en: "Yangyang", element: "气动", weapon: "迅刀", rarity: 4, tags: ["活泼","温柔","忠诚","直率","率真"], desc: "夜归的临时调查员，顺遂成长的少女，正努力成为保护他人的力量。" },
+  { name: "卡提希娅", en: "Cartethyia", element: "气动", weapon: "迅刀", rarity: 5, tags: ["优雅","独立","强势","智慧","孤僻"], desc: "曾是圣女与风潮之王的流浪骑士，如今自由自在地旅行于黎那汐塔。" },
+  { name: "夏空", en: "Ciaccona", element: "气动", weapon: "佩枪", rarity: 5, tags: ["优雅","浪漫","理性","理想"], desc: "黎那汐塔的吟游诗人，为神明与凡人而歌，记录并传唱世间的故事。" },
+  { name: "尤诺", en: "Iuno", element: "气动", weapon: "臂铠", rarity: 5, tags: ["智慧","自由","理性","神秘","倔强"], desc: "忤逆命运的谕女，历经裹挟却从不言败，以自己为唯一的解。" },
+  { name: "鉴心", en: "Jianxin", element: "气动", weapon: "臂铠", rarity: 5, tags: ["沉静","温柔","坚毅","智慧","隐忍"], desc: "一生只求武术极致的道士，风仪拳传人，抱朴守一。" },
+  { name: "忌炎", en: "Jiyan", element: "气动", weapon: "长刃", rarity: 5, tags: ["沉静","坚毅","忠诚","守护","凛然"], desc: "夜归军领军者，心藏正义、雷厉风行，一人之力可抵万军。" },
+  { name: "清宵", en: "Qingxiao", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","沉静","独立","坚毅","冷峻"], desc: "隐世剑修，清冷疏离、琴剑双绝，被世人称作「剑仙」。" },
+  { name: "仇远", en: "Qiuyuan", element: "气动", weapon: "迅刀", rarity: 5, tags: ["孤傲","独立","坚毅","洒脱"], desc: "前明庭千户、双眼失明的独行剑客，蒙冤下狱后浪迹天涯。" },
+  { name: "西格莉卡", en: "Sigrika", element: "气动", weapon: "臂铠", rarity: 5, tags: ["自由","热血","活泼","强势","果敢"], desc: "星炬学院的学生，为成为合格的昭日者而竭尽全力。" },
+  { name: "白芷", en: "Baizhi", element: "冷凝", weapon: "音感仪", rarity: 4, tags: ["温柔","守护","沉静","忠诚","慈悲"], desc: "主攻回音声态的华胥研究员，以疗愈生命为毕生课题。" },
+  { name: "散华", en: "Sanhua", element: "冷凝", weapon: "迅刀", rarity: 4, tags: ["沉静","忠诚","坚毅","独立","沉郁"], desc: "令尹近卫，曾是洞穿万物的修罗，如今化作寡言的守护者。" },
+  { name: "釉瑚", en: "Youhu", element: "冷凝", weapon: "臂铠", rarity: 4, tags: ["活泼","直率","自由","浪漫","灵动"], desc: "伶牙俐齿、古灵精怪的鉴宝师，以打油诗妙解珍宝。" },
+  { name: "珂莱塔", en: "Carlotta", element: "冷凝", weapon: "佩枪", rarity: 5, tags: ["优雅","强势","独立","智慧","从容"], desc: "莫塔里家族二小姐，明面是艺术投资人，暗地为家族处理麻烦。" },
+  { name: "绯雪", en: "Hiyuki", element: "冷凝", weapon: "迅刀", rarity: 5, tags: ["温柔","坚毅","守护","忠诚","温婉"], desc: "来自苇原的灼樱巫女，以特别对策组唯一成员身份停留拉海洛。" },
+  { name: "凌阳", en: "Lingyang", element: "冷凝", weapon: "臂铠", rarity: 5, tags: ["活泼","自由","热血","直率","率真"], desc: "今州瑞狮团成员，善良灵性的异族来客，热情而勇敢正直。" },
+  { name: "洛瑟菈", en: "Lucilla", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["理性","沉静","独立","智慧","理想"], desc: "星炬学院校长，脚踏实地的理想主义者，默默守护学生。" },
+  { name: "穗穗", en: "Suisui", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","忠诚","活泼","温婉"], desc: "明庭世家大小姐、昭明商会理事，以商道织就人间太平。" },
+  { name: "折枝", en: "Zhezhi", element: "冷凝", weapon: "音感仪", rarity: 5, tags: ["浪漫","温柔","沉静","智慧","细腻"], desc: "鬻画维生的委托画师，忧思敏感、不善言辞，所思皆寄寓于画。" },
+  { name: "卜灵", en: "Buling", element: "导电", weapon: "音感仪", rarity: 4, tags: ["活泼","直率","自由","灵动"], desc: "梦州方士、黑海岸客卿，豁达开朗的风水大师，云游四方。" },
+  { name: "灯灯", en: "Lumi", element: "导电", weapon: "长刃", rarity: 4, tags: ["温柔","活泼","浪漫","纯真"], desc: "呜呜物流的领航员，如小太阳般真诚热情的质朴少女。" },
+  { name: "渊武", en: "Yuanwu", element: "导电", weapon: "臂铠", rarity: 4, tags: ["坚毅","守护","沉静","慈悲"], desc: "拳馆老板，精通雷煌拳与养生术，为人温和而富余裕。" },
+  { name: "奥古斯塔", en: "Augusta", element: "导电", weapon: "长刃", rarity: 5, tags: ["坚毅","强势","热血","守护","豪迈"], desc: "七丘现任总督，所向披靡的烈阳与旗帜，愈战愈强。" },
+  { name: "卡卡罗", en: "Calcharo", element: "导电", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","独立","神秘","冷峻"], desc: "佣兵组织「幽灵猎犬」团长，心狠手辣、睚眦必报。" },
+  { name: "丽贝卡", en: "Rebecca", element: "导电", weapon: "佩枪", rarity: 5, tags: ["热血","直率","活泼","洒脱"], desc: "情绪反复无常的边缘行者，乐意用霰弹枪解决麻烦。" },
+  { name: "相里要", en: "Xiangli Yao", element: "导电", weapon: "臂铠", rarity: 5, tags: ["智慧","理性","沉静","细腻"], desc: "华胥研究院首席研究员，最年轻的全科学者，温和明理。" },
+  { name: "吟霖", en: "Yinlin", element: "导电", weapon: "音感仪", rarity: 5, tags: ["优雅","智慧","神秘","强势","狡黠"], desc: "曾为优秀巡尉，如今在暗处独自调查潜藏罪恶的共鸣者。" },
+  { name: "炽霞", en: "Chixia", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["热血","活泼","直率","忠诚","率真"], desc: "今州巡尉，热情如燃不尽的炽火，永远活力满满。" },
+  { name: "莫特斐", en: "Mortefi", element: "热熔", weapon: "佩枪", rarity: 4, tags: ["理性","智慧","沉静","细腻"], desc: "华胥研究院的黑石应用专家，将积压的情绪凝为火焰。" },
+  { name: "爱弥斯", en: "Aemeath", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["强势","热血","坚毅","孤僻"], desc: "星炬学院隧者适格者，如今是游走星海轻歌的电子幽灵。" },
+  { name: "布兰特", en: "Brant", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["自由","热血","浪漫","直率","洒脱"], desc: "愚人剧团团长，浪漫洒脱、多变生动，待人只凭真心。" },
+  { name: "长离", en: "Changli", element: "热熔", weapon: "迅刀", rarity: 5, tags: ["温柔","智慧","守护","优雅","从容"], desc: "令尹参事、终生浴火的策士，为心中夙愿把自己置于棋盘之上。" },
+  { name: "达妮娅", en: "Denia", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["神秘","强势","优雅","独立","狡黠"], desc: "星炬学院学生，终日懒散摸鱼，却总以「温柔」笑容示人。" },
+  { name: "安可", en: "Encore", element: "热熔", weapon: "音感仪", rarity: 5, tags: ["活泼","直率","温柔","浪漫","纯真"], desc: "与羊咩玩偶为伴的黑海岸客卿，渴望用童话创造幸福结局。" },
+  { name: "嘉贝莉娜", en: "Galbrena", element: "热熔", weapon: "佩枪", rarity: 5, tags: ["热血","强势","坚毅","冷峻"], desc: "外表冷峻、杀伐果断的猎魔人，人称「永火的恶魔」。" },
+  { name: "景燃", en: "Jingran", element: "热熔", weapon: "长刃", rarity: 5, tags: ["独立","自由","神秘","坚毅","洒脱"], desc: "生于梦州的寻幽客，行走蜃境遗墟之间，只循己心断是非。" },
+  { name: "露帕", en: "Lupa", element: "热熔", weapon: "长刃", rarity: 5, tags: ["强势","坚毅","热血","果敢"], desc: "七丘的角斗士，如孤狼般热情率直、富有野性的少女。" },
+  { name: "莫宁", en: "Mornye", element: "热熔", weapon: "长刃", rarity: 5, tags: ["温柔","守护","忠诚","理想"], desc: "深空联合研究院的工程师，以人造双腿踏足大地，心怀璀璨群星。" },
+  { name: "丹瑾", en: "Danjin", element: "湮灭", weapon: "迅刀", rarity: 4, tags: ["热血","叛逆","直率","神秘","执念"], desc: "以血凝刃的游侠，执绯刃、明是非，行走天涯。" },
+  { name: "桃祈", en: "Taoqi", element: "湮灭", weapon: "长刃", rarity: 4, tags: ["沉静","守护","温柔","温婉"], desc: "天工边防负责人，看似慵懒却总能可靠地守护今州。" },
+  { name: "椿", en: "Camellya", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["神秘","强势","浪漫","独立","执念"], desc: "黑海岸的执花，自由随性、危险迷人的育种者，只专注此刻。" },
+  { name: "坎特蕾拉", en: "Cantarella", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","浪漫","从容"], desc: "翡萨烈现任家主「毒药」，神秘高贵，以幻梦编织山巅冠冕。" },
+  { name: "千咲", en: "Chisa", element: "湮灭", weapon: "长刃", rarity: 5, tags: ["沉静","神秘","理性","冷峻"], desc: "自称普通学生的少女，能看透万物结构与牵引性命的那根弦。" },
+  { name: "弗洛洛", en: "Phrolova", element: "湮灭", weapon: "音感仪", rarity: 5, tags: ["优雅","神秘","强势","独立","执念"], desc: "残星会会监，游走生死的指挥家，演奏着「灵魂」的旋律。" },
+  { name: "洛可可", en: "Roccia", element: "湮灭", weapon: "臂铠", rarity: 5, tags: ["活泼","直率","浪漫","自由","灵动"], desc: "愚人剧团副手兼万能道具师，随身珍奇箱里仿佛装着整个世界。" },
+  { name: "秧秧·玄翎", en: "Yangyang Xuanling", element: "湮灭", weapon: "迅刀", rarity: 5, tags: ["坚毅","守护","忠诚","沉静","凛然"], desc: "音乐世家的祀声之人，温柔坚强、仗剑行义，暂代玄方城后玄骑使。" },
+  { name: "今汐", en: "Jinhsi", element: "衍射", weapon: "长刃", rarity: 5, tags: ["优雅","智慧","强势","沉静","凛然"], desc: "今州令尹，将万丈天光化作辉芒，温柔照亮人们的愿望。" },
+  { name: "露西", en: "Lucy", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["活泼","直率","热血","率真"], desc: "来自夜之城的边缘行者，团队黑客，心怀秘密、不愿深交。" },
+  { name: "陆·赫斯", en: "Luuk Herssen", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["优雅","理性","智慧","细腻"], desc: "星炬学院主执校医，聪明持稳，擅于倾听解构人心的阴霾。" },
+  { name: "琳奈", en: "Lynae", element: "衍射", weapon: "佩枪", rarity: 5, tags: ["理性","智慧","温柔","温婉"], desc: "星炬学院预科学生，张扬外表下充满活力与力量。" },
+  { name: "菲比", en: "Phoebe", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","忠诚","活泼","守护","纯真"], desc: "隐海修会的教士，友善虔诚，祈祷如光芒般柔和明亮。" },
+  { name: "守岸人", en: "The Shorekeeper", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["神秘","沉静","守护","温柔","无私"], desc: "黑海岸的守护者，除职责外的一切，都丰满于与你相遇之后。" },
+  { name: "维里奈", en: "Verina", element: "衍射", weapon: "音感仪", rarity: 5, tags: ["温柔","守护","活泼","忠诚","慈悲"], desc: "植物知识丰富的育种员，始终温柔，愿所有花朵拥有生命的奇迹。" },
+  { name: "赞妮", en: "Zani", element: "衍射", weapon: "臂铠", rarity: 5, tags: ["坚毅","忠诚","守护","沉静","凛然"], desc: "金库防卫科的最佳员工，计划无数，眼下只想准时下班。" }
 ];
 
 /* ============================================================
@@ -576,6 +576,15 @@ const QUESTIONS = [
       { text: "无声无息地离开，不打扰任何人", traits: ["神秘","孤傲","沉静"] },
       { text: "约好下次再见，把告别变成期待", traits: ["浪漫","活泼","守护"] }
     ]
+  },
+  {
+    question: "如果有一天可以放下一切，你最想去做的事是？",
+    options: [
+      { text: "环游世界，看尽未曾见过的风景", traits: ["自由","浪漫","洒脱"] },
+      { text: "回到牵挂的人身边，好好陪伴", traits: ["温柔","忠诚","守护"] },
+      { text: "挑战一件从未敢尝试的难事", traits: ["果敢","热血","坚毅"] },
+      { text: "静静钻研自己一直好奇的领域", traits: ["智慧","沉静","细腻"] }
+    ]
   }
 ];
 
@@ -585,7 +594,10 @@ const QUESTIONS = [
  * ============================================================ */
 const TRAITS = [
   "沉静","热血","自由","守护","理性","温柔","强势","叛逆",
-  "忠诚","独立","神秘","优雅","活泼","坚毅","孤傲","直率","浪漫","智慧"
+  "忠诚","独立","神秘","优雅","活泼","坚毅","孤傲","直率","浪漫","智慧",
+  "执念","狡黠","率真","孤僻","理想","倔强","慈悲","凛然",
+  "冷峻","洒脱","果敢","温婉","沉郁","灵动","从容","豪迈",
+  "细腻","纯真","无私","隐忍"
 ];
 
 /* 元素配色（用于徽章） */
@@ -602,6 +614,16 @@ const ELEMENT_COLORS = {
 /* ---------------- 测试逻辑 ---------------- */
 let current = 0;
 let answers = [];
+let quizQuestions = [];
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -617,7 +639,7 @@ function startQuiz() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[current];
+  const q = quizQuestions[current];
   document.getElementById("q-cur").textContent = current + 1;
   document.getElementById("q-pct").textContent = Math.round((current / QUESTIONS.length) * 100) + "%";
   document.getElementById("bar-fill").style.width = ((current + 1) / QUESTIONS.length * 100) + "%";
@@ -652,7 +674,7 @@ function pick(i, btn) {
 function calculate() {
   const scores = CHARACTERS.map(() => 0);
   answers.forEach((optIdx, qIdx) => {
-    const opt = QUESTIONS[qIdx].options[optIdx];
+    const opt = quizQuestions[qIdx].options[optIdx];
     opt.traits.forEach(t => {
       CHARACTERS.forEach((c, ci) => {
         if (c.tags.includes(t)) scores[ci] += 1;
